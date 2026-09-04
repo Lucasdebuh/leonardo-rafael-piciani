@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Administrativo — Leonardo e Rafael Piciani</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+<!-- LOGIN -->
+<section class="login-wrap" id="viewLogin">
+  <div class="login-card">
+    <div class="brand">Leonardo e Rafael Piciani</div>
+    <div class="subtitle">Área Administrativa</div>
+
+    <div class="form-alert error" id="loginAlert"></div>
+
+    <form id="formLogin" novalidate>
+      <div class="field">
+        <label for="username">Usuário</label>
+        <input type="text" id="username" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="password">Senha</label>
+        <input type="password" id="password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary" id="btnEntrar">ENTRAR</button>
+    </form>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<div id="viewDashboard" hidden>
+  <div class="admin-topbar">
+    <div class="container-wide" style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+      <div class="brand">Leonardo e Rafael Piciani<small>Painel Administrativo</small></div>
+      <button class="btn btn-outline btn-sm" style="color:#fff; border-color: rgba(255,255,255,0.4);" id="btnLogout">Sair</button>
+    </div>
+  </div>
+
+  <div class="container-wide section">
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="value" id="statTotal">0</div><div class="label">Total de cadastros</div></div>
+      <div class="stat-card"><div class="value" id="statHoje">0</div><div class="label">Hoje</div></div>
+      <div class="stat-card"><div class="value" id="statSemana">0</div><div class="label">Esta semana</div></div>
+      <div class="stat-card"><div class="value" id="statMes">0</div><div class="label">Este mês</div></div>
+    </div>
+
+    <div class="card chart-card">
+      <div class="section-title">Novos cadastros (últimos 14 dias)</div>
+      <canvas id="chartCadastros"></canvas>
+    </div>
+
+    <div class="tabs-bar">
+      <button class="tab-btn active" data-tab="cadastros">Cadastros</button>
+      <button class="tab-btn" data-tab="liderancas">Lideranças</button>
+    </div>
+
+    <!-- TAB: CADASTROS -->
+    <div id="tabCadastros" class="tab-panel">
+
+      <div class="toolbar">
+        <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nome ou telefone...">
+        <select id="filterLideranca">
+          <option value="">Todas as lideranças</option>
+          <option value="nenhuma">Direto (sem liderança)</option>
+        </select>
+        <input type="date" id="filterDe" title="Data inicial">
+        <input type="date" id="filterAte" title="Data final">
+        <select id="filterSort">
+          <option value="recentes">Mais recentes</option>
+          <option value="antigos">Mais antigos</option>
+          <option value="nome">Nome (A-Z)</option>
+        </select>
+        <div class="toolbar-actions">
+          <button class="btn btn-outline btn-sm" id="btnExportCsv">EXPORTAR CSV</button>
+          <button class="btn btn-outline btn-sm" id="btnExportXlsx">EXPORTAR PARA EXCEL</button>
+        </div>
+      </div>
+
+      <div class="bulk-bar" id="bulkBar">
+        <span id="bulkCount">0 selecionados</span>
+        <button class="btn btn-danger btn-sm" id="btnBulkDelete">Excluir selecionados</button>
+        <button class="btn btn-outline btn-sm" id="btnClearSelection">Limpar seleção</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:36px;"><input type="checkbox" id="checkAll"></th>
+              <th>Nome</th>
+              <th>Telefone</th>
+              <th>Liderança</th>
+              <th>Data</th>
+              <th>Horário</th>
+              <th style="width:100px;">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr class="empty-row"><td colspan="7">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination">
+        <button class="btn btn-outline btn-sm" id="btnPrev">&larr; Anterior</button>
+        <span id="pageInfo">Página 1</span>
+        <button class="btn btn-outline btn-sm" id="btnNext">Próxima &rarr;</button>
+      </div>
+
+    </div>
+
+    <!-- TAB: LIDERANÇAS -->
+    <div id="tabLiderancas" class="tab-panel" hidden>
+
+      <div class="toolbar">
+        <div class="section-title" style="margin:0;">Árvore de lideranças e cadastros</div>
+        <div class="toolbar-actions">
+          <button class="btn btn-primary btn-sm" id="btnNovaLideranca">+ NOVA LIDERANÇA</button>
+        </div>
+      </div>
+
+      <div id="liderancaTree"></div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="modalEdit" hidden>
+  <div class="modal-box">
+    <h3>Editar cadastro</h3>
+    <div class="form-alert error" id="editAlert"></div>
+    <form id="formEdit">
+      <input type="hidden" id="editId">
+      <div class="field">
+        <label for="editNome">Nome completo</label>
+        <input type="text" id="editNome" required>
+      </div>
+      <div class="field">
+        <label for="editTelefone">Telefone / WhatsApp</label>
+        <input type="tel" id="editTelefone" required>
+      </div>
+      <div class="field">
+        <label for="editLideranca">Liderança</label>
+        <select id="editLideranca">
+          <option value="">Direto (sem liderança)</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline btn-sm" id="btnCancelEdit" style="flex:1;">Cancelar</button>
+        <button type="submit" class="btn btn-primary btn-sm" style="flex:1;">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- LIDERANÇA MODAL -->
+<div class="modal-overlay" id="modalLideranca" hidden>
+  <div class="modal-box">
+    <h3 id="liderancaModalTitle">Nova liderança</h3>
+    <div class="form-alert error" id="liderancaAlert"></div>
+    <form id="formLideranca">
+      <input type="hidden" id="liderancaId">
+      <div class="field">
+        <label for="liderancaNome">Nome da liderança</label>
+        <input type="text" id="liderancaNome" required>
+      </div>
+      <div class="field">
+        <label for="liderancaTelefone">Telefone (opcional)</label>
+        <input type="tel" id="liderancaTelefone">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline btn-sm" id="btnCancelLideranca" style="flex:1;">Cancelar</button>
+        <button type="submit" class="btn btn-primary btn-sm" style="flex:1;">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- LINK MODAL (shown after creating a liderança) -->
+<div class="modal-overlay" id="modalLink" hidden>
+  <div class="modal-box">
+    <h3>Liderança criada!</h3>
+    <p>Compartilhe este link exclusivo. Todo cadastro feito por ele será atribuído a esta liderança.</p>
+    <div class="field">
+      <input type="text" id="linkGerado" readonly>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-outline btn-sm" id="btnCopyLink" style="flex:1;">Copiar link</button>
+      <button type="button" class="btn btn-primary btn-sm" id="btnCloseLink" style="flex:1;">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="modalConfirm" hidden>
+  <div class="modal-box">
+    <h3 id="confirmTitle">Tem certeza?</h3>
+    <p id="confirmText">Esta ação não pode ser desfeita.</p>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-outline btn-sm" id="btnCancelConfirm" style="flex:1;">Cancelar</button>
+      <button type="button" class="btn btn-danger btn-sm" id="btnConfirmYes" style="flex:1;">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="/js/mask.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>
