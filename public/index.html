@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Leonardo e Rafael Piciani — Ajude o Esporte de Rio das Ostras</title>
+<meta name="description" content="Cadastre-se para apoiar e contribuir com melhorias para o esporte em Rio das Ostras.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header class="hero">
+  <div class="container">
+    <div class="hero-brand">Leonardo e Rafael Piciani</div>
+    <h1>AJUDE O ESPORTE DE<br>RIO DAS OSTRAS <span>A MELHORAR</span></h1>
+    <div class="hero-photo">
+      <img src="/img/leonardo-rafael.jpg" alt="Leonardo e Rafael Piciani juntos" width="800" height="1000">
+    </div>
+    <p class="hero-invite">Seu apoio faz a diferença. Cadastre-se em poucos segundos e ajude a construir um esporte cada vez melhor para Rio das Ostras.</p>
+    <div class="container" style="padding:0; max-width:420px; margin:0 auto;">
+      <button class="btn btn-cta" id="btnAbrirForm">QUERO PARTICIPAR</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section" id="formSection">
+    <div class="container">
+
+      <div class="card" id="cardForm">
+        <h2 class="card-title">Faça seu cadastro</h2>
+        <p class="card-subtitle">Preencha seus dados abaixo. É rápido e simples.</p>
+
+        <div class="form-alert error" id="formAlert"></div>
+
+        <form id="formCadastro" novalidate>
+          <div class="field" id="fieldNome">
+            <label for="nome">Nome completo</label>
+            <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" autocomplete="name" required>
+            <div class="error-msg">Informe seu nome completo.</div>
+          </div>
+
+          <div class="field" id="fieldTelefone">
+            <label for="telefone">Telefone / WhatsApp</label>
+            <input type="tel" id="telefone" name="telefone" placeholder="(22) 99999-9999" inputmode="numeric" autocomplete="tel" required>
+            <div class="error-msg">Informe um telefone válido com DDD.</div>
+          </div>
+
+          <p class="privacy-note">
+            Seus dados serão utilizados apenas para fins de organização e contato relacionados a esta iniciativa.
+            Consulte nossa <a href="/privacidade.html">Política de Privacidade</a>.
+          </p>
+
+          <button type="submit" class="btn btn-primary" id="btnSubmit">REALIZAR CADASTRO</button>
+        </form>
+      </div>
+
+      <div class="card" id="cardSucesso" hidden>
+        <div class="success-screen">
+          <div class="success-icon">✓</div>
+          <h2>Cadastro realizado com sucesso!</h2>
+          <p>Obrigado por participar e ajudar o esporte de Rio das Ostras a melhorar.</p>
+          <button class="btn btn-outline" id="btnNovoCadastro">Fazer novo cadastro</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    Leonardo e Rafael Piciani &middot; Rio das Ostras<br>
+    <a href="/privacidade.html">Política de Privacidade</a>
+  </footer>
+</main>
+
+<script src="/js/mask.js"></script>
+<script src="/js/cadastro.js"></script>
+</body>
+</html>
