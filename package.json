@@ -1,0 +1,28 @@
+{
+  "name": "piciani-esporte",
+  "version": "1.0.0",
+  "description": "Cadastro de apoiadores - Leonardo e Rafael Piciani",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^13.0.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.4.2",
+    "exceljs": "^4.4.0",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "express-session": "^1.19.0",
+    "helmet": "^8.3.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
