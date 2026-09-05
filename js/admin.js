@@ -557,7 +557,7 @@ document.getElementById('btnExportCsv').addEventListener('click', () => {
   const header = 'Nome,Telefone,Lideranca,Data,Horario\n';
   const esc = (v) => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`;
   const body = rows.map((r) => [esc(r.Nome), esc(r.Telefone), esc(r.Lideranca), r.Data, r.Horario].join(',')).join('\n');
-  downloadBlob(new Blob(['﻿' + header + body], { type: 'text/csv;charset=utf-8;' }), 'cadastros_piciani.csv');
+  downloadBlob(new Blob(['﻿' + header + body], { type: 'text/csv;charset=utf-8;' }), 'cadastros_picciani.csv');
 });
 
 document.getElementById('btnExportXlsx').addEventListener('click', () => {
@@ -566,7 +566,7 @@ document.getElementById('btnExportXlsx').addEventListener('click', () => {
   ws['!cols'] = [{ wch: 32 }, { wch: 20 }, { wch: 24 }, { wch: 14 }, { wch: 12 }];
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Cadastros');
-  XLSX.writeFile(wb, 'cadastros_piciani.xlsx');
+  XLSX.writeFile(wb, 'cadastros_picciani.xlsx');
 });
 
 // ---------- Lideranças ----------
