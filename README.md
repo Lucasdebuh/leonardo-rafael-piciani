@@ -1,4 +1,4 @@
-# Leonardo e Rafael Piciani — Cadastro de Apoiadores
+# Leonardo e Rafael Picciani — Cadastro de Apoiadores
 
 Site hospedado no **GitHub Pages**, com banco de dados e login administrativo no **Firebase** (Firestore + Authentication).
 
@@ -19,6 +19,10 @@ Este é um site 100% estático (HTML/CSS/JS puro, sem servidor próprio). Toda a
 - A senha do administrador é gerenciada pelo Firebase Authentication (nunca armazenada em texto simples).
 - A `apiKey` do Firebase que aparece em `js/firebase-config.js` **não é um segredo** — é uma chave pública de identificação do projeto. A segurança real está nas regras do Firestore (arquivo de regras configurado diretamente no console do Firebase).
 
+## Nota sobre o nome do repositório
+
+O repositório e o projeto Firebase foram criados como `leonardo-rafael-piciani` (identificadores técnicos, não podem ser renomeados depois de criados sem quebrar a URL atual). O nome correto exibido no site é **Picciani** (com dois "c") — já corrigido em todo o conteúdo visível.
+
 ## Estrutura
 
 ```
@@ -31,7 +35,7 @@ js/
   util.js, mask.js    — utilitários (máscara de telefone, formatação)
   cadastro.js         — lógica do formulário público
   admin.js            — lógica completa do painel (auth, CRUD, lideranças, exportação)
-public/img/           — foto de Leonardo e Rafael Piciani
+public/img/           — foto de Leonardo e Rafael Picciani
 ```
 
 ## Rodando localmente
