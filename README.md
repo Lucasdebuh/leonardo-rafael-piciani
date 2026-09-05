@@ -1,53 +1,61 @@
 # Leonardo e Rafael Piciani — Cadastro de Apoiadores
 
-Site de cadastro de apoiadores para a iniciativa "Ajude o Esporte de Rio das Ostras a Melhorar", com painel administrativo completo.
+Site hospedado no **GitHub Pages**, com banco de dados e login administrativo no **Firebase** (Firestore + Authentication).
 
-## Rodando localmente
+🔗 **Site ao vivo:** https://lucasdebuh.github.io/leonardo-rafael-piciani/
+🔗 **Painel administrativo:** https://lucasdebuh.github.io/leonardo-rafael-piciani/admin.html
 
-```
-npm install
-npm start
-```
+## Como funciona
 
-Acesse `http://localhost:3000` para o site público e `http://localhost:3000/admin` para o painel administrativo.
+Este é um site 100% estático (HTML/CSS/JS puro, sem servidor próprio). Toda a lógica de cadastro, login e dados roda direto no navegador via SDK do Firebase:
 
-Crie um arquivo `.env` na raiz com base nas variáveis abaixo antes de rodar.
+- **Cadastro público** (`index.html` / `js/cadastro.js`): grava direto na coleção `participantes` do Firestore. O ID do documento é o telefone (somente dígitos), o que impede cadastros duplicados nativamente pelas regras de segurança.
+- **Painel administrativo** (`admin.html` / `js/admin.js`): login via Firebase Authentication (e-mail/senha). Depois de autenticado, lê e escreve nas coleções `participantes` e `liderancas` em tempo real (as mudanças aparecem na hora, sem precisar recarregar a página).
+- **Lideranças**: cada liderança tem um "código" (slug do nome) que vira o link `?lider=codigo`. Um cadastro feito por esse link grava esse código no campo `lideranca_codigo`, sem precisar de leitura pública da coleção de lideranças.
 
-## Credenciais do administrador
+## Segurança
 
-Definidas no arquivo `.env` (`ADMIN_USERNAME` e `ADMIN_PASSWORD`). Elas só são usadas na **primeira execução** para criar o admin no banco — depois disso, altere a senha diretamente no banco (ou peça para recriar o hash).
-
-**Troque a senha padrão antes de divulgar o site publicamente.**
-
-## Lideranças
-
-No painel administrativo, aba "Lideranças", o administrador pode:
-- Criar lideranças (nome + telefone opcional) — cada uma recebe um link exclusivo (`?lider=codigo`).
-- Compartilhar esse link com a liderança; todo cadastro feito por ele é atribuído automaticamente a ela.
-- Ver a árvore de cadastros de cada liderança, editar, excluir e exportar.
+- Os dados dos cadastros **não são públicos**: as regras do Firestore só permitem `create` (cadastro) publicamente; leitura, edição e exclusão exigem estar autenticado como administrador.
+- A senha do administrador é gerenciada pelo Firebase Authentication (nunca armazenada em texto simples).
+- A `apiKey` do Firebase que aparece em `js/firebase-config.js` **não é um segredo** — é uma chave pública de identificação do projeto. A segurança real está nas regras do Firestore (arquivo de regras configurado diretamente no console do Firebase).
 
 ## Estrutura
 
-- `src/server.js` — servidor Express (API pública + administrativa)
-- `src/db.js` — banco SQLite (better-sqlite3), criado automaticamente em `data/piciani.db`
-- `public/` — frontend (HTML/CSS/JS puro, sem build step)
+```
+index.html          — página pública de cadastro
+admin.html           — painel administrativo
+privacidade.html      — política de privacidade
+css/                  — estilos
+js/
+  firebase-config.js  — configuração do projeto Firebase
+  util.js, mask.js    — utilitários (máscara de telefone, formatação)
+  cadastro.js         — lógica do formulário público
+  admin.js            — lógica completa do painel (auth, CRUD, lideranças, exportação)
+public/img/           — foto de Leonardo e Rafael Piciani
+```
 
-## Variáveis de ambiente (`.env`)
+## Rodando localmente
 
-| Variável | Descrição |
-|---|---|
-| `PORT` | Porta do servidor (padrão 3000) |
-| `SESSION_SECRET` | Segredo para assinar cookies de sessão — troque em produção |
-| `ADMIN_USERNAME` | Usuário do admin inicial |
-| `ADMIN_PASSWORD` | Senha do admin inicial |
-| `NODE_ENV` | `production` em produção (ativa cookies seguros) |
+Como é um site estático com módulos ES (`import`/`export`), não pode ser aberto direto como arquivo (`file://`) — precisa de um servidor HTTP simples:
 
-## Hospedagem (produção)
+```bash
+python -m http.server 8080
+```
 
-Este é um app Node.js com banco SQLite em arquivo — precisa de um host que mantenha **disco persistente** (senão os cadastros somem a cada deploy). Opções recomendadas:
+Depois acesse `http://localhost:8080`.
 
-- **Render.com** — já incluso `render.yaml` neste projeto (disco persistente de 1GB). Conecte o repositório e o Render detecta a configuração automaticamente.
-- **Railway.app** — adicione um volume persistente apontando para a pasta `data/`.
-- **Fly.io** — use `fly volumes create` e monte em `/app/data`.
+## Gerenciando o Firebase
 
-Em qualquer opção, configure as variáveis de ambiente do `.env` no painel do host (nunca suba o `.env` para o repositório).
+Projeto: `leonardo-rafael-piciani` no [console do Firebase](https://console.firebase.google.com/project/leonardo-rafael-piciani).
+
+- **Firestore Database** → coleções `participantes` e `liderancas`.
+- **Authentication** → usuários administradores (adicione mais e-mails de admin por ali, se precisar de mais de um acesso).
+- **Regras do Firestore** → aba "Regras" dentro do Firestore Database.
+
+## Alterando a senha do administrador
+
+No [console do Firebase](https://console.firebase.google.com/project/leonardo-rafael-piciani/authentication/users) → Authentication → Users, clique nos três pontinhos ao lado do usuário e escolha "Reset password" (envia um e-mail de redefinição), ou edite diretamente.
+
+## Legado: versão Node.js/Express
+
+Este projeto também contém uma versão alternativa com backend Node.js + SQLite (pastas `src/`, `package.json`, `render.yaml`) que **não está em uso** — foi a primeira versão, substituída pela arquitetura estática + Firebase acima para permitir hospedagem gratuita direto no GitHub Pages. Pode ser ignorada ou removida.
